@@ -11,6 +11,51 @@
 // #CONTROLS
 // ------------------------------
 
+// range slider
+input[type="range"] {
+    @include transition(background 0.25s ease-in-out);
+    -webkit-appearance: none;
+    vertical-align: top;
+    width: ($baseline*10) + px;
+    height: 1.15rem;
+    border: 1px solid palette(grayscale, base);
+    border-right: 1px dotted palette(grayscale, mid-light);
+    border-radius: (($baseline/5) + px) 0 0 ($baseline/5 + px);
+    background: palette(grayscale, xx-light);
+
+    &:hover,
+    &:focus {
+        background: palette(grayscale, white);
+    }
+
+    & + input[type="text"] {
+        vertical-align: top;
+        height: 1.15rem;
+        margin-left: -($baseline/5) + px;
+        padding: 0 ($baseline/5) + px;
+        border: 1px solid palette(grayscale, base);
+        border-left: none;
+        font-size: font-size(small);
+        font-weight: font-weight(bold);
+    }
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    @include transition(background 0.25s ease-in-out);
+    -webkit-appearance: none;
+    border: 1px solid palette(primary, sat);
+    height: 1.15rem;
+    width: $baseline + px;
+    background: palette(primary, base);
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        background: palette(primary, sat);
+        border-color: palette(primary, sat);
+    }
+}
+
 // tab panels and examples
 .example-set {
     @extend %clear-last-child;
