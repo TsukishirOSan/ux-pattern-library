@@ -41,8 +41,12 @@ $(function() {
                 that.updateChoice($(this).data('option'));
             });
 
-            $(document).on('click', function() {
-                // that.closeSelectMenu();
+            $(document).click(function(event) {
+                if (!$(event.target).closest(that.vars.wrapper).length) {
+                    if ($(that.vars.menu).hasClass(that.vars.visible)) {
+                        that.closeSelectMenu();
+                    }
+                }
             });
         },
 
@@ -64,7 +68,7 @@ $(function() {
 
         closeSelectMenu: function() {
             var that = this,
-                open = $(document).find(that.vars.menu).not(':focus');
+                open = $(document).find(that.vars.menu);
 
             if (open) {
                 open
