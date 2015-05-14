@@ -6,112 +6,78 @@
  * control is not visible to screen readers.
  *
  * Choosing an option in the replacement menu also updates the
- * default seleclt menu thus maintaining accessibility.
+ * default select menu thus maintaining accessibility.
  */
 
 $(function() {
 
-    var SelectMenuReplacement = {
+    var CustomSelectReplacement = {
 
         vars: {
-            wrapper: $('.select-replaced'),
-            original: $('.select-replaced').find('.input-select'),
-            value: $('.select-replaced').find('.selected-value'),
-            menu: $('.select-replaced').find('.select-replaced-menu'),
-            button: $('.select-replaced').find('.select-replaced-menu').next('.button-select-replaced'),
-            active: 'is-active',
-            visible: 'is-visible',
-            hidden: 'is-hidden'
+            replaced:       $('.replace-select'),
+            replacedClass:  'is-replaced is-transparent',
+            customClass:    'wrapper-custom-select',
+            wrapperClass:   'wrapper-replace-select',
+            valueClass:     'replace-value'
         },
 
         init: function() {
-            this.listenForClick();
+            this.replaceFoundSelects();
+            this.listenForSelectClick();
         },
 
-        listenForClick: function() {
+        replaceFoundSelects: function() {
             var that = this;
 
-            that.vars.wrapper.on('click', that.vars.value, function() {
-                that.openSelectMenu($(this));
-            }).on('click', that.vars.button, function() {
-                that.openSelectMenu($(this));
-            });
+            if (that.vars.replaced.length) {
 
-            that.vars.menu.on('click', '.select-option', function() {
-                that.updateChoice($(this).data('option'));
-            });
+                that.vars.replaced.each(function() {
+                    $(this).addClass(that.vars.replacedClass);
+                    $(this).wrap('<div class="' + that.vars.wrapperClass + '"></div>');
+                    $(this).parent().append($('<span class="' + that.vars.customClass + '" aria-hidden="true"><span class="' + that.vars.valueClass + '"></span></span>'));
 
-            $(document).click(function(event) {
-                if (!$(event.target).closest(that.vars.wrapper).length) {
-                    if ($(that.vars.menu).hasClass(that.vars.visible)) {
-                        that.closeSelectMenu();
-                    }
-                }
-            });
-        },
-
-        openSelectMenu: function(control) {
-            var that = this;
-
-            control
-                .parent()
-                .find(that.vars.value)
-                .addClass(that.vars.active);
-
-            control
-                .parent()
-                .find(that.vars.menu)
-                .removeClass(that.vars.hidden)
-                .addClass(that.vars.visible)
-                    .focus();
-        },
-
-        closeSelectMenu: function() {
-            var that = this,
-                open = $(document).find(that.vars.menu);
-
-            if (open) {
-                open
-                    .removeClass(that.vars.visible)
-                    .addClass(that.vars.hidden)
-                    .parent()
-                    .find(that.vars.value)
-                        .removeClass(that.vars.active);
+                    that.setInitialText($(this));
+                });
             }
         },
 
-        updateChoice: function(choice) {
+        setInitialText: function(el) {
             var that = this,
-                options = that.vars.menu.find('.select-option');
+                val = el.find('option:first').text(),
+                wrapper = el.parent(),
+                text = wrapper.find('.' + that.vars.valueClass);
 
-            options.each(function() {
-                $(this).removeClass(that.vars.active);
-            });
-
-            that.vars.menu.find('.select-option[data-option="' + choice + '"]')
-                .addClass(that.vars.active);
-
-            that.vars.value.text(choice);
-
-            that.updateOriginal(choice);
-            that.closeSelectMenu();
+            text.text(val);
         },
 
-        updateOriginal: function(choice) {
-            var that = this,
-                options = that.vars.original.find('option');
+        listenForSelectClick: function() {
+            var that = this;
 
-            options.each(function() {
-                $(this).removeAttr('selected').removeProp('selected');
+            that.vars.replaced.on('change', function() {
+                var el = $(this);
+
+                that.updateReplacedOption(el);
             });
+        },
 
-            that.vars.original
-                .find('option[value="' + choice + '"]')
-                .attr('selected', 'selected')
-                .prop('selected', 'selected');
+        updateReplacedOption: function(el) {
+            var that = this,
+                val = el.val(),
+                wrapper = el.parent(),
+                text = wrapper.find('.' + that.vars.valueClass);
+
+            text.text(val);
+        },
+
+        listenForKeyPress: function() {
+            var that = this;
+
+            that.vars.replaced.on('keyup', function() {
+                // Not sure this is necessary yet.
+            });
         }
 
     };
 
-    SelectMenuReplacement.init();
+    CustomSelectReplacement.init();
 });

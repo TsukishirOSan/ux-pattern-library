@@ -47,7 +47,7 @@
     background: palette(grayscale, white);
     font-family: $text-base-font-family;
     font-size: font-size(base);
-    color: palette(grayscale-cool, base);
+    color: palette(grayscale-cool, x-dark);
 
     &:focus {
         outline: none;
@@ -85,85 +85,47 @@
 // ----------------------------
 // #SELECT
 // ----------------------------
-// We hide default select menus and replace them with something that looks nicer.
-.select-replaced {
-    position: relative; // we'll need to position the menu absolutely
-    width: ($baseline*20) + px; // do we want to define this here?
+.wrapper-replace-select {
+    position: relative;
+}
 
-    .input-text {
+.input-select {
+    min-height: ($baseline*2) + px; // needs to match the height of the replaced span
+
+    &:focus,
+    &.is-active {
+        border-color: palette(primary, base);
         color: palette(grayscale, dark);
-        // how wide do we want the 'select' menu to be?
-        
-        &:hover,
-        &:focus {
-            cursor: pointer;
-        }
-
-        &:disabled,
-        &.is-disabled {
-            cursor: default;
-        }
     }
 
-    .select-replaced-menu {
-        @extend %reset-lists;
-        @extend %list-unstyled;
-        position: absolute;
-        display: inline-block;
-        top: spacing-vertical(base);
-        left: 0; // RTL later
-        width: 100%;
-        border: 1px solid palette(primary, base);
-        background: palette(grayscale, white);
-        box-shadow: 0 1px 3px $shadow;
-
-        &:focus {
-            outline: none;
-        }
-
-        .select-option {
-            display: block;
-            padding: ($baseline/2) + px;
-
-            &:hover,
-            &:focus {
-                background: palette(primary, base);
-                color: palette(grayscale, white);
-                cursor: pointer;
-            }
-
-            &.is-active {
-                background: palette(grayscale-cool, xx-trans);
-
-                &:hover,
-                &:focus {
-                    background: palette(grayscale-cool, xx-trans);
-                    color: palette(grayscale, dark);
-                    cursor: default;
-                }
-            }
-        }
+    &:disabled,
+    &.is-disabled {
+        border-color: palette(grayscale, light);
+        background: palette(grayscale, x-light);
     }
 
-    .button-select-replaced {
+    &.is-replaced {
         position: absolute;
-        top: ($baseline/2) + px;
-        right: ($baseline/2) + px;
-        background: $transparent;
-        border: none;
+        z-index: z-index(mid-front);
+    }
 
-        svg {
-            height: ($baseline/2) + px;
-            width: ($baseline/2) + px;
-            fill: palette(grayscale-cool, light);
-        }
+    &.is-transparent {
+        opacity: 0;
+    }
+}
 
-        &:hover,
-        &:focus {
+.wrapper-custom-select {
+    @extend .input;
+    @extend .input-select;
+    position: absolute;
+    display: inline;
+    top: 0;
+    left: 0;
+    width: auto;
+    z-index: z-index(base);
 
-            svg {
-                fill: $link-color;
-            }
-        }
+    &:focus,
+    &.is-active {
+        @extend .input-select
     }
 }
